@@ -51,17 +51,18 @@ function postItem() {
   .then((response) =>{
     console.log(response);
     createAuction(response.name, response.category, response.starting_price, response.starting_price);
+
   })
   .catch(e => console.log(e));
 }
 function bidItem() {
-  getAuctions();
+ let itemNames = [];
   prompt([
     {
-      type: 'input',
+      type: 'list',
       name: 'item',
-      message: 'Which item do you want to bid on?'
-
+      message: 'Which item do you want to bid on?',
+      choices: itemNames
     },
     {
       type: 'number',
@@ -101,6 +102,7 @@ function createAuction(item, cat, starting, current) {
   }, (err) => {
     if (err) { console.log(err) }
     console.log(`You've created an item:${item}`)
+    init();
   })
 }
 
@@ -127,9 +129,9 @@ function searchAuctions(search) {
 }
 
 // Makes a bid on an item
-function bid(bid, item) {
-  connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
-    if (err) { console.log(err) }
-    if console.log(`New highest bid is set to ${}.`)
-  })
-}
+// function bid(bid, item) {
+//   connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
+//     if (err) { console.log(err) }
+//     if console.log(`New highest bid is set to ${}.`)
+//   })
+// }
