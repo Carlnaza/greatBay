@@ -55,12 +55,13 @@ function postItem() {
   .catch(e => console.log(e));
 }
 function bidItem() {
+  getAuctions();
   prompt([
     {
       type: 'input',
       name: 'item',
       message: 'Which item do you want to bid on?'
-      
+
     },
     {
       type: 'number',
@@ -69,7 +70,7 @@ function bidItem() {
    }
 ])
 .then((response)=>{
-  bid(response.)
+  // bid(response.)
 })
 .catch(e => console.log(e));
   
@@ -79,29 +80,16 @@ function bidItem() {
 init();
 
 
-// const connection = mysql.createConnection(
-//   {
-//     host: 'localhost',
-//     port: 3306,
-//     user: 'root',
-//     password: 'spikey11',
-//     database: 'greatbay'
-//   }
-// )
+const connection = mysql.createConnection(
+  {
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: 'spikey11',
+    database: 'greatbay'
+  }
+)
 
-// Creates an auction
-
-// Finds Item to bid on
-// connection.query('SELECT * FROM auctions', (err, items) => {
-//   if (err) { console.log(err) }
-//   console.log(items)
-// })
-
-// Makes a bid on an item
-// connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${}` }, { item: `${}` }], (err) => {
-//   if (err) { console.log(err) }
-//   if console.log(`New highest bid is set to ${}.`)
-// })
 
 // Creates an auction
 function createAuction(item, cat, starting, current) {
@@ -117,8 +105,16 @@ function createAuction(item, cat, starting, current) {
 }
 
 // Finds Item to bid on
-function getAuction() {
-  connection.query('SELECT * FROM auctions', (err, items) => {
+function getAuctions() {
+  connection.query('SELECT item FROM auctions', (err, items) => {
+    if (err) { console.log(err) }
+    console.log(items)
+  })
+}
+
+// search by keyword
+function searchAuctions(search) {
+  connection.query(`SELECT * FROM auctions WHERE item LIKE '${search}%'`, (err, items) => {
     if (err) { console.log(err) }
     console.log(items)
   })
@@ -131,5 +127,3 @@ function bid(bid, item) {
     if console.log(`New highest bid is set to ${}.`)
   })
 }
-
-// connection.end()
