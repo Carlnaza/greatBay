@@ -36,6 +36,13 @@ function getAuctions() {
     console.log(items)
   })
 }
+// Get auction names
+function getAuctionNames() {
+  connection.query('SELECT item FROM auctions', (err, items) => {
+    if (err) { console.log(err) }
+    console.log(items)
+  })
+}
 
 // search by keyword
 function searchAuctions(search) {
