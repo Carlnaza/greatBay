@@ -16,16 +16,20 @@ function init() {
       type: 'list',
       name: 'choice',
       message: 'What would you like to do?',
-      choices: ['POST AN ITEM', 'BID ON AN ITEM']
+      choices: ['POST AN ITEM', 'BID ON AN ITEM', 'EXIT APP']
     }
   ])
     .then((response) => {
       if (response.choice === 'POST AN ITEM') {
         postItem();
       }
-      else {
+      else if (response.choice === 'BID ON AN ITEM') {
         bidItem();
       }
+      else {
+        connection.end();
+      }
+
     })
     .catch(e => console.log(e))
 }
@@ -49,7 +53,7 @@ function postItem() {
     }
   ])
     .then((response) => {
-      console.log(response);
+      
       createAuction(response.name, response.category, response.starting_price, response.starting_price);
 
     })
@@ -81,13 +85,12 @@ function bidItem() {
 
         connection.query('SELECT current_bid FROM auctions WHERE item = ?', { item: `${response.item}` }, (err, price) => {
           if (err) { console.log(err) }
-
+          console.log(price);
+          console.log(response.item);
           if (price >= response.bid) {
             console.log(`Bid is too low, current bid is ${price}`);
-
           } else {
             bid(response.bid, response.item);
-
           }
         })
 
@@ -134,9 +137,7 @@ function getAuction(item) {
     console.log(items)
   })
 }
-function getAuctionPrice(item) {
 
-}
 // Finds Item to bid on
 function getAuctions() {
   connection.query('SELECT item FROM auctions', (err, items) => {
@@ -158,5 +159,6 @@ function bid(bid, item) {
   connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
     if (err) { console.log(err) }
     console.log(`New highest bid is set to ${bid}.`)
+    init();
   })
 }
