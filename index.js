@@ -4,7 +4,7 @@ const mysql = require('mysql2')
 const connection = mysql.createConnection(
   {
     host: 'localhost',
-    post: 3306,
+    port: 3306,
     user: 'root',
     password: 'admin',
     database: 'greatbay'
@@ -39,8 +39,6 @@ function bid(bid, item) {
     if console.log(`New highest bid is set to ${}.`)
   })
 }
-
-connection.end()
 
 quesionsPost = [
   ''
