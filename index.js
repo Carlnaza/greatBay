@@ -12,28 +12,33 @@ const connection = mysql.createConnection(
 )
 
 // Creates an auction
-connection.query('INSERT INTO auctions SET ?', {
-  item: ,
-  category: ,
-  starting_bid: ,
-  current_bid: 
-}, (err) => {
-  if (err) { console.log(err) }
-  console.log(`You've created an item:${}`)
-})
+function createAuction(item, cat, starting, current) {
+  connection.query('INSERT INTO auctions SET ?', {
+    item: item,
+    category: cat,
+    starting_bid: starting,
+    current_bid: current
+  }, (err) => {
+    if (err) { console.log(err) }
+    console.log(`You've created an item:${}`)
+  })
+}
 
 // Finds Item to bid on
-connection.query('SELECT * FROM auctions', (err, items) => {
-  if(err) { console.log (err) }
-  console.log(items)
-})
+function getAuction() {
+  connection.query('SELECT * FROM auctions', (err, items) => {
+    if (err) { console.log(err) }
+    console.log(items)
+  })
+}
 
 // Makes a bid on an item
-connection.query('UPDATE auctions SET ? WHERE ?', [{current_bid: `${}`}, {item: `${}`}], (err) => {
-  if(err) { console.log(err) }
-  if console.log(`New highest bid is set to ${}.`)
-})
-
+function bid(bid, item) {
+  connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
+    if (err) { console.log(err) }
+    if console.log(`New highest bid is set to ${}.`)
+  })
+}
 
 connection.end()
 
