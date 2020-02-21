@@ -48,34 +48,56 @@ function postItem() {
       message: questionsPost[2]
     }
   ])
-  .then((response) =>{
-    console.log(response);
-    createAuction(response.name, response.category, response.starting_price, response.starting_price);
+    .then((response) => {
+      console.log(response);
+      createAuction(response.name, response.category, response.starting_price, response.starting_price);
 
-  })
-  .catch(e => console.log(e));
+    })
+    .catch(e => console.log(e));
 }
 function bidItem() {
- let itemNames = [];
-  prompt([
-    {
-      type: 'list',
-      name: 'item',
-      message: 'Which item do you want to bid on?',
-      choices: itemNames
-    },
-    {
-      type: 'number',
-      name: 'bid',
-      message: questionsBid[0]
-   }
-])
-.then((response)=>{
-  // bid(response.)
-})
-.catch(e => console.log(e));
-  
- 
+  connection.query('SELECT * FROM auctions', (err, items) => {
+    if (err) { console.log(err) }
+    prompt([
+      {
+        type: 'list',
+        name: 'item',
+        message: 'Which item do you want to bid on?',
+        choices: function () {
+          let choices = [];
+          for (let i = 0; i < items.length; i++) {
+            choices.push(items[i].item);
+          }
+          return choices;
+        }
+      },
+      {
+        type: 'number',
+        name: 'bid',
+        message: questionsBid[0]
+      }
+    ])
+      .then((response) => {
+
+        connection.query('SELECT current_bid FROM auctions WHERE item = ?', { item: `${response.item}` }, (err, price) => {
+          if (err) { console.log(err) }
+
+          if (price >= response.bid) {
+            console.log(`Bid is too low, current bid is ${price}`);
+
+          } else {
+            bid(response.bid, response.item);
+
+          }
+        })
+
+
+      })
+      .catch(e => console.log(e));
+  })
+
+
+
 }
 
 init();
@@ -112,15 +134,11 @@ function getAuction(item) {
     console.log(items)
   })
 }
+function getAuctionPrice(item) {
+
+}
 // Finds Item to bid on
 function getAuctions() {
-  connection.query('SELECT item FROM auctions', (err, items) => {
-    if (err) { console.log(err) }
-    console.log(items)
-  })
-}
-// Get auction names
-function getAuctionNames() {
   connection.query('SELECT item FROM auctions', (err, items) => {
     if (err) { console.log(err) }
     console.log(items)
@@ -136,9 +154,9 @@ function searchAuctions(search) {
 }
 
 // Makes a bid on an item
-// function bid(bid, item) {
-//   connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
-//     if (err) { console.log(err) }
-//     if console.log(`New highest bid is set to ${}.`)
-//   })
-// }
+function bid(bid, item) {
+  connection.query('UPDATE auctions SET ? WHERE ?', [{ current_bid: `${bid}` }, { item: `${item}` }], (err) => {
+    if (err) { console.log(err) }
+    console.log(`New highest bid is set to ${bid}.`)
+  })
+}
