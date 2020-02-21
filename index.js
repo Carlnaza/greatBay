@@ -25,8 +25,16 @@ function createAuction(item, cat, starting, current) {
 }
 
 // Finds Item to bid on
-function getAuction() {
+function getAuctions() {
   connection.query('SELECT * FROM auctions', (err, items) => {
+    if (err) { console.log(err) }
+    console.log(items)
+  })
+}
+
+// search by keyword
+function searchAuctions(search) {
+  connection.query(`SELECT * FROM auctions WHERE item LIKE '${search}%'`, (err, items) => {
     if (err) { console.log(err) }
     console.log(items)
   })
@@ -75,3 +83,4 @@ function bidItem(){
 }
 
 init();
+}
