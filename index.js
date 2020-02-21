@@ -23,6 +23,12 @@ function createAuction(item, cat, starting, current) {
   })
 }
 
+function getAuction(item) {
+  connection.query('SELECT * FROM auctions WHERE item = ?', { item: `${item}` }, (err, items) => {
+    if (err) { console.log(err) }
+    console.log(items)
+  })
+}
 // Finds Item to bid on
 function getAuctions() {
   connection.query('SELECT * FROM auctions', (err, items) => {
